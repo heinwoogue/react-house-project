@@ -69,7 +69,7 @@ function HomeForm() {
     const [selectedSpecialProps, setSelectedSpecialProps] = useImmer<string[]>([]);
     const [selectedFloorType, setSelectedFloorType] = useImmer<string | undefined>(undefined);
 
-    const [inputWindows, setInputWindows] = useImmer<({selectedWindowStyle: string, selectedGlassType: string} | undefined )[]>([]);
+    const [inputWindows, setInputWindows] = useImmer<{selectedWindowStyle: string, selectedGlassType: string}[]>([]);
     
     const handleFloorClose = () => setFloorShow(false);
     const handleFloorShow = (floorId?: string) => {
@@ -122,35 +122,23 @@ function HomeForm() {
         setNewHouse(
             prev => {
                 if(!prev){
-                    return null;
+                    return prev;
                 }
                 if(activeFloorId){
-                    return {
-                        ...prev,
-                        floors: prev.floors.map(
-                            floor => {
-                                if(floor.id === activeFloorId){
-                                    return {
-                                        ...floor,
-                                        name: floorNameRef.current!.value
-                                    }
-                                }
-                                return floor;
-                            }
-                        )
+                    const prevFloor = prev.floors.find(
+                        floor => floor.id === activeFloorId
+                    );
+                    if(prevFloor){
+                        prevFloor.name = floorNameRef.current!.value
                     }
                 }else {
-                    return {
-                        ...prev,
-                        floors: [
-                            ...prev?.floors,
-                            {
-                                id: uuidV4(), 
-                                name: floorNameRef.current!.value, 
-                                rooms: []
-                            }
-                        ]
-                    }
+                    prev.floors.push(
+                        {
+                            id: uuidV4(), 
+                            name: floorNameRef.current!.value, 
+                            rooms: []
+                        }
+                    )
                 }
             }
         );
@@ -166,68 +154,47 @@ function HomeForm() {
                 if(!prev){
                     return prev;
                 }
-                return {
-                    ...prev,
-                    floors: prev.floors.map(
-                        floor => {
-                            if(floor.id === activeFloorId){
-                                if(activeRoomId){
-                                    return {
-                                        ...floor,
-                                        rooms: floor.rooms.map(
-                                            room => {
-                                                if(room.id === activeRoomId){
-                                                    return {
-                                                        ...room,
-                                                        name: roomNameRef.current!.value,
-                                                        sizeInSquareMeters: Number(roomSizeRef.current!.value),
-                                                        type: selectedRoomType!,
-                                                        specialProps: [],
-                                                        floorType: selectedFloorType!,
-                                                        windows: inputWindows.map(
-                                                            inputWindow => (
-                                                                {
-                                                                    id: uuidV4(),
-                                                                    windowStyle: inputWindow!.selectedWindowStyle!,
-                                                                    glassType: inputWindow!.selectedGlassType!
-                                                                }
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                                return room;
-                                            }
-                                        )
-                                    }
-                                }
-                                return {
-                                    ...floor,
-                                    rooms: [
-                                        ...floor.rooms,
-                                        {
-                                            id: uuidV4(),
-                                            name: roomNameRef.current!.value,
-                                            sizeInSquareMeters: Number(roomSizeRef.current!.value),
-                                            type: selectedRoomType!,
-                                            specialProps: [],
-                                            floorType: selectedFloorType!,
-                                            windows: inputWindows.map(
-                                                inputWindow => (
-                                                    {
-                                                        id: uuidV4(),
-                                                        windowStyle: inputWindow!.selectedWindowStyle!,
-                                                        glassType: inputWindow!.selectedGlassType!
-                                                    }
-                                                )
-                                            )
-                                        }
-                                    ]
-                                }
-                            }
-                            return floor;
-                        }
-                    )
+                const prevFloor = prev.floors.find(
+                    floor => floor.id === activeFloorId
+                );
+                if(!prevFloor){
+                    return prev;
                 }
+                const roomProps = {
+                    name: roomNameRef.current!.value,
+                    sizeInSquareMeters: Number(roomSizeRef.current!.value),
+                    type: selectedRoomType!,
+                    specialProps: [],
+                    floorType: selectedFloorType!,
+                    windows: inputWindows.map(
+                        inputWindow => (
+                            {
+                                id: uuidV4(),
+                                windowStyle: inputWindow!.selectedWindowStyle!,
+                                glassType: inputWindow!.selectedGlassType!
+                            }
+                        )
+                    )
+                };
+                if(activeRoomId){
+                    let prevRoomNdx = prevFloor.rooms.findIndex(
+                        room => room.id === activeRoomId
+                    );
+                    if(prevRoomNdx >= 0) {
+                        prevFloor.rooms[prevRoomNdx] = {
+                            ...prevFloor.rooms[prevRoomNdx],
+                            ...roomProps
+                        }
+                    }
+                }else{
+                    prevFloor.rooms.push(
+                        {
+                            ...roomProps,
+                            id: uuidV4()
+                        }
+                    );
+                }
+                return prev;
             }
         );
         handleRoomClose();
@@ -236,7 +203,7 @@ function HomeForm() {
         setInputWindows(
             prev=> [
                 ...prev,
-                undefined
+                {}
             ]
         )
     };
@@ -290,22 +257,18 @@ function HomeForm() {
                 if(!prev){
                     return prev;
                 }
-                return {
-                    ...prev,
-                    floors: prev.floors.map(
-                        floor => {
-                            if(floor.id === floorId){
-                                return {
-                                    ...floor,
-                                    rooms: floor.rooms.filter(
-                                        room => room.id !== roomId
-                                    ) 
-                                }
-                            }
-                            return floor;
-                        }
-                    )
+                const prevFloors = prev.floors.find(
+                    floor => floor.id === floorId
+                );
+                if(prevFloors){
+                    const roomNdx = prevFloors.rooms.findIndex(
+                        room => room.id === roomId
+                    );
+                    if(roomNdx >= 0){
+                        prevFloors.rooms.splice(roomNdx, 1);
+                    }
                 }
+                return prev;
             }
         );
     }
@@ -625,23 +588,24 @@ function HomeForm() {
                                                     options={windowStyleOptions}
                                                     value={
                                                         inputWindow && inputWindow.selectedWindowStyle
-                                                        ? {value: inputWindow.selectedWindowStyle, label: inputWindow.selectedWindowStyle}
+                                                        ? {
+                                                            value: inputWindow.selectedWindowStyle, 
+                                                            label: windowStyleOptions.find(
+                                                                option => option.value === inputWindow.selectedWindowStyle
+                                                            )?.label ?? inputWindow.selectedWindowStyle
+                                                        }
                                                         :undefined
                                                     }
                                                     onChange={
                                                         windowStyle => {
                                                             setInputWindows(
-                                                                prev => prev.map(
-                                                                    (inputWindow, i)=>{
-                                                                        if(i===ndx){
-                                                                            return {
-                                                                                ...inputWindow,
-                                                                                selectedWindowStyle: windowStyle!.value
-                                                                            }
-                                                                        }
-                                                                        return inputWindow;
+                                                                prev => {
+                                                                    const prevWindow = prev[ndx];
+                                                                    if(prevWindow){
+                                                                        prevWindow.selectedWindowStyle = windowStyle!.value
                                                                     }
-                                                                )
+                                                                    return prev;
+                                                                }
                                                             )
                                                         }
                                                     }
@@ -660,28 +624,42 @@ function HomeForm() {
                                                     options={glassTypeOptions}
                                                     value={
                                                         inputWindow && inputWindow.selectedGlassType
-                                                        ? {value: inputWindow.selectedGlassType, label: inputWindow.selectedGlassType}
+                                                        ? {
+                                                            value: inputWindow.selectedGlassType, 
+                                                            label: glassTypeOptions.find(
+                                                                option => option.value === inputWindow.selectedGlassType
+                                                            )?.label ?? inputWindow.selectedGlassType
+                                                        }
                                                         : undefined
                                                     }
                                                     onChange={
                                                         glassType => {
                                                             setInputWindows(
-                                                                prev => prev.map(
-                                                                    (inputWindow, i)=>{
-                                                                        if(i===ndx){
-                                                                            return {
-                                                                                ...inputWindow,
-                                                                                selectedGlassType: glassType!.value
-                                                                            }
-                                                                        }
-                                                                        return inputWindow;
+                                                                prev => {
+                                                                    const prevWindow = prev[ndx];
+                                                                    if(prevWindow){
+                                                                        prevWindow.selectedGlassType = glassType!.value;
                                                                     }
-                                                                )
+                                                                    return prev;
+                                                                }
                                                             )
                                                         }
                                                     }
                                                 />
                                             </div>
+                                            <Button variant="danger"
+                                                onClick={
+                                                    ()=>{
+                                                        setInputWindows(
+                                                            prev => {
+                                                                prev.splice(ndx, 1);
+                                                                return prev;
+                                                            }
+                                                        )
+                                                    }
+                                                }>
+                                                Delete
+                                            </Button>
                                         </InputGroup>
                                     )
                                 )
