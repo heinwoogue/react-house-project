@@ -1,4 +1,5 @@
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useRef } from 'react'
+import { useImmer } from "use-immer";
 import { Accordion, Button, Card, Form, InputGroup, Modal, Stack } from 'react-bootstrap';
 import { AccordionEventKey } from 'react-bootstrap/esm/AccordionContext';
 import { Stepper } from 'react-form-stepper';
@@ -47,28 +48,28 @@ type House = {
 
 function HomeForm() {
     const [activeStep, setActiveStep] = useLocalStorage<number>(ACTIVE_STEP, 0);
-    const [floorShow, setFloorShow] = useState(false);
-    const [roomShow, setRoomShow] = useState(false);
-    const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
-    const [activeFloorId, setActiveFloorId] = useState<string | null>(null);
-    const [activeFloorNdx, setActiveFloorNdx] = useState<number | null>(0);
+    const [floorShow, setFloorShow] = useImmer(false);
+    const [roomShow, setRoomShow] = useImmer(false);
+    const [activeRoomId, setActiveRoomId] = useImmer<string | null>(null);
+    const [activeFloorId, setActiveFloorId] = useImmer<string | null>(null);
+    const [activeFloorNdx, setActiveFloorNdx] = useImmer<number | null>(0);
     const [newHouse, setNewHouse] = useLocalStorage<House | null>(NEW_HOUSE, null);
 
     const houseNameRef = useRef<HTMLInputElement>(null);
     const houseSizeRef = useRef<HTMLInputElement>(null);
-    const [selectedFoundationType, setSelectedFoundationType] = useState<string | undefined>(newHouse?.foundationType);
-    const [selectedRoofType, setSelectedRoofType] = useState<string | undefined>(newHouse?.roofType);
-    const [selectedGardens, setSelectedGardens] = useState<string[] | undefined>(newHouse?.gardens);
+    const [selectedFoundationType, setSelectedFoundationType] = useImmer<string | undefined>(newHouse?.foundationType);
+    const [selectedRoofType, setSelectedRoofType] = useImmer<string | undefined>(newHouse?.roofType);
+    const [selectedGardens, setSelectedGardens] = useImmer<string[] | undefined>(newHouse?.gardens);
 
     const floorNameRef = useRef<HTMLInputElement>(null);
 
     const roomNameRef = useRef<HTMLInputElement>(null);
     const roomSizeRef = useRef<HTMLInputElement>(null);
-    const [selectedRoomType, setSelectedRoomType] = useState<string | undefined>();
-    const [selectedSpecialProps, setSelectedSpecialProps] = useState<string[]>([]);
-    const [selectedFloorType, setSelectedFloorType] = useState<string | undefined>();
+    const [selectedRoomType, setSelectedRoomType] = useImmer<string | undefined>(undefined);
+    const [selectedSpecialProps, setSelectedSpecialProps] = useImmer<string[]>([]);
+    const [selectedFloorType, setSelectedFloorType] = useImmer<string | undefined>(undefined);
 
-    const [inputWindows, setInputWindows] = useState<{selectedWindowStyle: string, selectedGlassType: string}[]>([]);
+    const [inputWindows, setInputWindows] = useImmer<({selectedWindowStyle: string, selectedGlassType: string} | undefined )[]>([]);
     
     const handleFloorClose = () => setFloorShow(false);
     const handleFloorShow = (floorId?: string) => {
@@ -100,18 +101,18 @@ function HomeForm() {
             ?.rooms.find(room => room.id === roomId);
             
         if(room){
-            setSelectedRoomType(prev => room.type);
-            setSelectedFloorType(prev => room.floorType);
-            setInputWindows(prev => room.windows.map(
+            setSelectedRoomType(room.type);
+            setSelectedFloorType(room.floorType);
+            setInputWindows(room.windows.map(
                 window => ({
                     selectedWindowStyle: window.windowStyle,
                     selectedGlassType: window.glassType
                 })
             ));
         }else{
-            setSelectedRoomType(prev => undefined);
-            setSelectedFloorType(prev => undefined);
-            setInputWindows(prev => []);
+            setSelectedRoomType(undefined);
+            setSelectedFloorType(undefined);
+            setInputWindows([]);
         }
 
         setRoomShow(true);
@@ -154,7 +155,7 @@ function HomeForm() {
             }
         );
         if(!activeFloorId){
-            setActiveFloorNdx(prev => newHouse!.floors.length);
+            setActiveFloorNdx(newHouse!.floors.length);
         }
         handleFloorClose();
     }
@@ -187,8 +188,8 @@ function HomeForm() {
                                                             inputWindow => (
                                                                 {
                                                                     id: uuidV4(),
-                                                                    windowStyle: inputWindow.selectedWindowStyle!,
-                                                                    glassType: inputWindow.selectedGlassType!
+                                                                    windowStyle: inputWindow!.selectedWindowStyle!,
+                                                                    glassType: inputWindow!.selectedGlassType!
                                                                 }
                                                             )
                                                         )
@@ -214,8 +215,8 @@ function HomeForm() {
                                                 inputWindow => (
                                                     {
                                                         id: uuidV4(),
-                                                        windowStyle: inputWindow.selectedWindowStyle!,
-                                                        glassType: inputWindow.selectedGlassType!
+                                                        windowStyle: inputWindow!.selectedWindowStyle!,
+                                                        glassType: inputWindow!.selectedGlassType!
                                                     }
                                                 )
                                             )
@@ -235,10 +236,7 @@ function HomeForm() {
         setInputWindows(
             prev=> [
                 ...prev,
-                {
-                    selectedWindowStyle: '',
-                    selectedGlassType: ''
-                }
+                undefined
             ]
         )
     };
@@ -284,7 +282,7 @@ function HomeForm() {
                 }
             }
         );
-        setActiveFloorNdx(prev => 0);
+        setActiveFloorNdx(0);
     }
     const deleteRoom = (floorId: string, roomId: string)=>{
         setNewHouse(
@@ -353,7 +351,7 @@ function HomeForm() {
                                     </Form.Group>
                                     <Form.Group controlId="sizeInSquareMeters">
                                         <Form.Label>Size (square meters) <span className="text-danger">*</span></Form.Label>
-                                        <Form.Control type="number" ref={houseSizeRef} required defaultValue={newHouse?.sizeInSquareMeters}/>
+                                        <Form.Control type="number" step=".01" ref={houseSizeRef} required defaultValue={newHouse?.sizeInSquareMeters}/>
                                     </Form.Group>
                                     <Form.Group controlId="roofType">
                                         <Form.Label>Roof Type <span className="text-danger">*</span></Form.Label>
@@ -525,6 +523,7 @@ function HomeForm() {
                             <Form.Group controlId="sizeInSquareMeters">
                                 <Form.Label>Size (square meters) <span className="text-danger">*</span></Form.Label>
                                 <Form.Control ref={roomSizeRef} 
+                                    type="number" step=".01"
                                     defaultValue={
                                         newHouse?.floors.find(floor => floor.id === activeFloorId)
                                             ?.rooms.find(room => room.id === activeRoomId)
@@ -549,7 +548,7 @@ function HomeForm() {
                                     onChange={
                                         roomType => {
                                             setSelectedRoomType(roomType?.value);
-                                            setSelectedSpecialProps(prev=>[]);
+                                            setSelectedSpecialProps([]);
                                         }
                                     }
                                 />
@@ -601,11 +600,7 @@ function HomeForm() {
                             <Stack direction="horizontal">
                                 <span>
                                     Total Windows: &nbsp;
-                                    {
-                                        newHouse?.floors.find(floor => floor.id === activeFloorId)
-                                            ?.rooms.find(room => room.id === activeRoomId)
-                                            ?.windows.length ?? 0
-                                    }
+                                    {inputWindows.length}
                                 </span>
                                 <Button type="button" variant="primary"
                                     className="ms-auto"
@@ -629,9 +624,9 @@ function HomeForm() {
                                                     isSearchable={true}
                                                     options={windowStyleOptions}
                                                     value={
-                                                        windowStyleOptions.find(
-                                                            option => option.value === inputWindow.selectedWindowStyle
-                                                        ) ?? {value: inputWindow.selectedWindowStyle, label: inputWindow.selectedWindowStyle}
+                                                        inputWindow && inputWindow.selectedWindowStyle
+                                                        ? {value: inputWindow.selectedWindowStyle, label: inputWindow.selectedWindowStyle}
+                                                        :undefined
                                                     }
                                                     onChange={
                                                         windowStyle => {
@@ -664,9 +659,9 @@ function HomeForm() {
                                                     isSearchable={true}
                                                     options={glassTypeOptions}
                                                     value={
-                                                        glassTypeOptions.find(
-                                                            option => option.value === inputWindow.selectedGlassType
-                                                        ) ?? {value: inputWindow.selectedGlassType, label: inputWindow.selectedGlassType}
+                                                        inputWindow && inputWindow.selectedGlassType
+                                                        ? {value: inputWindow.selectedGlassType, label: inputWindow.selectedGlassType}
+                                                        : undefined
                                                     }
                                                     onChange={
                                                         glassType => {
