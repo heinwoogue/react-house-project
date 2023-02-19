@@ -2,7 +2,7 @@
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Container } from "react-bootstrap"
 import { Navigate, Route, Routes } from "react-router-dom"
-import NewHome from "./NewHome"
+import NewHome from "./home/NewHome"
 
 function App() {
 
