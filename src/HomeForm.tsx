@@ -69,7 +69,7 @@ const roomTypePropertiesOptions: {[key: string]: {value:string, label: string}[]
         {value: 'hasIsland', label: 'Has Island'},
         {value: 'hasMusicBox', label: 'Has Music Box'},
     ],
-    'kitechen': [
+    'kitchen': [
         {value: 'hasOven', label: 'Has Oven'},
         {value: 'hasMicrowave', label: 'Has Microwave'},
     ],
@@ -340,18 +340,15 @@ function HomeForm() {
         if(activeStep === 0){
             setNewHouse(
                 prev => {
-                    if(!prev){
-                        return prev;
-                    }
                     return {
-                        ...prev,
-                        id: uuidV4(),
+                        ...prev ?? {},
+                        id: prev?.id ?? uuidV4(),
                         name: houseNameRef.current!.value,
                         sizeInSquareMeters: Number(houseSizeRef.current!.value),
                         foundationType: selectedFoundationType!,
                         roofType: selectedRoofType!,
                         gardens: selectedGardens || [],
-                        floors: prev.floors || []
+                        floors: prev?.floors || []
                     }
                 }
             );
