@@ -12,7 +12,7 @@ function NewHomeForm() {
     
     return (
         <>
-            <h1>New Home</h1>
+            <h1>New House</h1>
             <Stepper
                 steps={[{ label: 'Genreal' }, { label: 'Floors' }, {label: 'Complete'}]}
                 activeStep={activeStep}
