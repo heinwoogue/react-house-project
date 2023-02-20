@@ -4,15 +4,18 @@ import { Button, Form, Modal, Stack } from 'react-bootstrap'
 import { FloorModalProps } from '../../types'
 import { useFloorShow, useHideFloor } from '../../store/floor-show-store';
 import { useActiveFloorId } from '../../store/active-floor-id-store';
+import { useSetActiveFloorNdx } from '../../store/active-floor-ndx-store';
 
 function FloorModal(
-    {setActiveFloorNdx, newHouse, setNewHouse}
+    {newHouse, setNewHouse}
     : FloorModalProps
 ) {
     const floorShow = useFloorShow();
     const hideFloor = useHideFloor();
 
     const activeFloorId = useActiveFloorId();
+
+    const setActiveFloorNdx = useSetActiveFloorNdx();
 
     const floorNameRef = useRef<HTMLInputElement>(null);
     
