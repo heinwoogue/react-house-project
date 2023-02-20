@@ -217,7 +217,7 @@ function RoomModal(
                                 (inputWindow, ndx) => (
                                     <InputGroup key={ndx} style={{marginTop: '-20px'}}>
                                         <InputGroup.Text>
-                                            Style
+                                            Style <span className="text-danger">*</span>
                                         </InputGroup.Text>
                                         <div className="form-control p-0 m-0">
                                             <CreatableSelect
@@ -253,7 +253,7 @@ function RoomModal(
                                             /> 
                                         </div>
                                         <InputGroup.Text>
-                                            Glass Type
+                                            Glass Type <span className="text-danger">*</span>
                                         </InputGroup.Text>
                                         <div className="form-control p-0 m-0">
                                             <CreatableSelect
