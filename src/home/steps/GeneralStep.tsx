@@ -1,10 +1,10 @@
 import { Button, Card, Form, Stack } from "react-bootstrap"
 import Select from 'react-select';
-import { foundationTypeOptions, gardenOptions, roofTypeOptions } from "../const";
 import { useImmer } from "use-immer";
 import { FormEvent, useRef } from "react";
-import { HouseFormStepProps } from "../types";
 import { v4 as uuidV4 } from "uuid"
+import { HouseFormStepProps } from "../../types";
+import { foundationTypeOptions, gardenOptions, roofTypeOptions } from "../../const";
 
 function GeneralStep({setActiveStep, newHouse, setNewHouse}: HouseFormStepProps) {
 

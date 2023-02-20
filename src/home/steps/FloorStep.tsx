@@ -1,14 +1,11 @@
-import React, { FormEvent, useRef } from 'react'
-import { v4 as uuidV4 } from "uuid";
 import { useImmer } from "use-immer";
-import Select from 'react-select';
-import CreatableSelect from 'react-select/creatable';
-import { Accordion, Button, Form, Modal, Stack, InputGroup, Card } from 'react-bootstrap'
-import { HouseFormStepProps } from '../types'
+import { Accordion, Button, Stack, Card } from 'react-bootstrap'
+
 import { AccordionEventKey } from 'react-bootstrap/esm/AccordionContext';
-import { floorTypeOptions, glassTypeOptions, roomTypeOptions, roomTypePropertiesOptions, windowStyleOptions } from '../const';
-import FloorModal from './modal/FloorModal';
-import RoomModal from './modal/RoomModal';
+import { HouseFormStepProps } from '../../types';
+import RoomModal from '../modal/RoomModal';
+import FloorModal from '../modal/FloorModal';
+
 
 function FloorStep({setActiveStep, newHouse, setNewHouse}: HouseFormStepProps) {
     const [floorShow, setFloorShow] = useImmer(false);

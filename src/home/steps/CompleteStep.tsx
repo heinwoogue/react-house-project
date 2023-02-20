@@ -1,5 +1,5 @@
 import { Button, Card, Stack } from 'react-bootstrap'
-import { HouseFormStepProps } from '../types'
+import { HouseFormStepProps } from '../../types'
 
 function CompleteStep({setActiveStep}: Pick<HouseFormStepProps, 'setActiveStep'>) {
   return (
