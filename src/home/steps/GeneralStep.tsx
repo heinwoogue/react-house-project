@@ -5,9 +5,11 @@ import { FormEvent, useRef } from "react";
 import { v4 as uuidV4 } from "uuid"
 import { HouseFormStepProps } from "../../types";
 import { foundationTypeOptions, gardenOptions, roofTypeOptions } from "../../const";
+import {useNextActiveStep} from "../../store/active-step-store";
 
-function GeneralStep({setActiveStep, newHouse, setNewHouse}: HouseFormStepProps) {
-
+function GeneralStep({newHouse, setNewHouse}: HouseFormStepProps) {
+    const nextActiveStep = useNextActiveStep();
+    
     const houseNameRef = useRef<HTMLInputElement>(null);
     const houseSizeRef = useRef<HTMLInputElement>(null);
     const [selectedFoundationType, setSelectedFoundationType] = useImmer<string | undefined>(newHouse?.foundationType);
@@ -31,7 +33,7 @@ function GeneralStep({setActiveStep, newHouse, setNewHouse}: HouseFormStepProps)
             }
         );
         
-        setActiveStep(prev => prev + 1);
+        nextActiveStep();
     }
 
     return (

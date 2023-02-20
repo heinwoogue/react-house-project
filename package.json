@@ -19,7 +19,8 @@
     "react-router-dom": "^6.4.1",
     "react-select": "^5.4.0",
     "use-immer": "^0.8.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zustand": "^4.3.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

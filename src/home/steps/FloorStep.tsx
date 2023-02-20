@@ -5,9 +5,13 @@ import { AccordionEventKey } from 'react-bootstrap/esm/AccordionContext';
 import { HouseFormStepProps } from '../../types';
 import RoomModal from '../modal/RoomModal';
 import FloorModal from '../modal/FloorModal';
+import {useNextActiveStep, usePrevActiveStep} from "../../store/active-step-store";
 
 
-function FloorStep({setActiveStep, newHouse, setNewHouse}: HouseFormStepProps) {
+function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
+    const nextActiveStep = useNextActiveStep();
+    const prevActiveStep = usePrevActiveStep();
+    
     const [floorShow, setFloorShow] = useImmer(false);
     const [activeFloorNdx, setActiveFloorNdx] = useImmer<number | null>(null);
     
@@ -165,11 +169,11 @@ function FloorStep({setActiveStep, newHouse, setNewHouse}: HouseFormStepProps) {
 
             <Stack direction="horizontal" gap={2} className="mt-5">
                 <Button type="button" variant="primary"
-                    onClick={()=>setActiveStep(prev => prev - 1)}>
+                    onClick={prevActiveStep}>
                     Back
                 </Button>
                 <Button type="button" className="ms-auto"
-                    onClick={()=>setActiveStep(prev => prev + 1)}>
+                    onClick={nextActiveStep}>
                     Next
                 </Button>
             </Stack>

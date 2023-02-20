@@ -35,7 +35,6 @@ export type House = {
 export type HouseFormStepProps = {
     newHouse: House | null;
     setNewHouse: Updater<House | null>;
-    setActiveStep: Updater<number>;
 }
 
 export type FloorModalProps = {
@@ -58,4 +57,10 @@ export type RoomModalProps = {
     setActiveRoomId: Updater<string | null>;
     newHouse: House | null;
     setNewHouse: Updater<House | null>;
+}
+
+export type ActiveStepState = {
+    activeStep: number;
+    nextActiveStep: () => void;
+    prevActiveStep: () => void;
 }

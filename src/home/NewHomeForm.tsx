@@ -7,10 +7,11 @@ import CompleteStep from './steps/CompleteStep';
 import { House } from '../types';
 import GeneralStep from './steps/GeneralStep';
 import FloorStep from './steps/FloorStep';
+import {useActiveStep} from '../store/active-step-store';
 
 
 function NewHomeForm() {
-    const [activeStep, setActiveStep] = useLocalStorage<number>(ACTIVE_STEP, 0);
+    const activeStep = useActiveStep();
     const [newHouse, setNewHouse] = useLocalStorage<House | null>(NEW_HOUSE, null);
     
     return (
@@ -27,7 +28,6 @@ function NewHomeForm() {
                 <GeneralStep 
                     newHouse={newHouse}
                     setNewHouse={setNewHouse}
-                    setActiveStep={setActiveStep}
                 />
             }
             {
@@ -35,14 +35,11 @@ function NewHomeForm() {
                 <FloorStep 
                     newHouse={newHouse}
                     setNewHouse={setNewHouse}
-                    setActiveStep={setActiveStep}
                 />
             }
             {
                 activeStep === 2 &&
-                <CompleteStep
-                    setActiveStep={setActiveStep}
-                />
+                <CompleteStep/>
             }
         </>
     )
