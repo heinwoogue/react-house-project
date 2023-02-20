@@ -2,12 +2,15 @@ import React, { FormEvent, useRef } from 'react'
 import { v4 as uuidV4 } from "uuid";
 import { Button, Form, Modal, Stack } from 'react-bootstrap'
 import { FloorModalProps } from '../../types'
+import { useFloorShow, useHideFloor } from '../../store/floor-show-store';
 
 function FloorModal(
-    {floorShow, setFloorShow, activeFloorId, setActiveFloorNdx, newHouse, setNewHouse}
+    {activeFloorId, setActiveFloorNdx, newHouse, setNewHouse}
     : FloorModalProps
 ) {
-    const handleFloorClose = () => setFloorShow(false);
+    const floorShow = useFloorShow();
+    const hideFloor = useHideFloor();
+
     const floorNameRef = useRef<HTMLInputElement>(null);
     
     const handleSaveFloor = (e: FormEvent)=>{
@@ -38,10 +41,10 @@ function FloorModal(
         if(!activeFloorId){
             setActiveFloorNdx(newHouse!.floors.length);
         }
-        handleFloorClose();
+        hideFloor();
     }
     return (
-        <Modal show={floorShow} onHide={handleFloorClose}>
+        <Modal show={floorShow} onHide={hideFloor}>
             <Form onSubmit={handleSaveFloor}>
                 <Modal.Header closeButton>
                 <Modal.Title>{activeFloorId !== null ? 'Edit': 'Add'} Floor</Modal.Title>

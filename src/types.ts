@@ -38,8 +38,6 @@ export type HouseFormStepProps = {
 }
 
 export type FloorModalProps = {
-    floorShow: boolean;
-    setFloorShow: Updater<boolean>;
     activeFloorId: string | null;
     setActiveFloorId: Updater<string | null>;
     activeFloorNdx: number | null;
@@ -63,4 +61,10 @@ export type ActiveStepState = {
     activeStep: number;
     nextActiveStep: () => void;
     prevActiveStep: () => void;
+}
+
+export type FloorShowState = {
+    floorShow: boolean;
+    hideFloor: () => void;
+    showFloor: () => void;
 }
