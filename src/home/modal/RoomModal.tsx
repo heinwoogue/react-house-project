@@ -6,14 +6,16 @@ import { v4 as uuidV4 } from "uuid";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { floorTypeOptions, glassTypeOptions, roomTypeOptions, roomTypePropertiesOptions, windowStyleOptions } from '../../const';
+import { useHideRoom, useRoomShow } from '../../store/room-show-store';
 
 function RoomModal(
     {
-        roomShow, setRoomShow, activeFloorId,
-        activeRoomId, newHouse, setNewHouse
+        activeFloorId, activeRoomId, newHouse, setNewHouse
     }: RoomModalProps
 ) {
-    const handleRoomClose = () => setRoomShow(false);
+    const roomShow = useRoomShow();
+    const hideRoom = useHideRoom();
+    
     const roomNameRef = useRef<HTMLInputElement>(null);
     const roomSizeRef = useRef<HTMLInputElement>(null);
     const [selectedRoomType, setSelectedRoomType] = useImmer<string | null>(null);
@@ -96,7 +98,7 @@ function RoomModal(
                 return prev;
             }
         );
-        handleRoomClose();
+        hideRoom();
     }
     const handleAddWindow = ()=>{
         setInputWindows(
@@ -108,7 +110,7 @@ function RoomModal(
     };
 
     return (
-        <Modal show={roomShow} onHide={handleRoomClose} size="lg">
+        <Modal show={roomShow} onHide={hideRoom} size="lg">
             <Form onSubmit={handleSaveRoom}>
                 <Modal.Header closeButton>
                 <Modal.Title>{activeRoomId !== null ? 'Edit': 'Add'} Room</Modal.Title>

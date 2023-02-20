@@ -7,8 +7,8 @@ const floorShowStore = create<FloorShowState>()(
         (set) => (
             {
                 floorShow: false,
-                showFloor: ()=>set(state => ({floorShow: true})),
-                hideFloor: ()=>set(state => ({floorShow: false})),
+                showFloor: ()=>set({floorShow: true}),
+                hideFloor: ()=>set({floorShow: false}),
             }
         )
     )

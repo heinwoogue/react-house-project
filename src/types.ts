@@ -47,8 +47,6 @@ export type FloorModalProps = {
 }
 
 export type RoomModalProps = {
-    roomShow: boolean;
-    setRoomShow: Updater<boolean>;
     activeFloorId: string | null;
     setActiveFloorId: Updater<string | null>;
     activeRoomId: string | null;
@@ -67,4 +65,10 @@ export type FloorShowState = {
     floorShow: boolean;
     hideFloor: () => void;
     showFloor: () => void;
+}
+
+export type RoomShowState = {
+    roomShow: boolean;
+    hideRoom: () => void;
+    showRoom: () => void;
 }
