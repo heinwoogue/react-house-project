@@ -1,21 +1,24 @@
-import { useImmer } from "use-immer";
 import { Accordion, Button, Stack, Card } from 'react-bootstrap'
 
 import { AccordionEventKey } from 'react-bootstrap/esm/AccordionContext';
-import { HouseFormStepProps } from '../../types';
 import RoomModal from '../modal/RoomModal';
 import FloorModal from '../modal/FloorModal';
 import {useNextActiveStep, usePrevActiveStep} from "../../store/active-step-store";
 import { useShowFloor } from "../../store/floor-show-store";
 import { useShowRoom } from "../../store/room-show-store";
-import { useActiveFloorId, useSetActiveFloorId } from "../../store/active-floor-id-store";
+import { useSetActiveFloorId } from "../../store/active-floor-id-store";
 import { useActiveFloorNdx, useSetActiveFloorNdx } from "../../store/active-floor-ndx-store";
 import { useActiveRoomId, useSetActiveRoomId } from "../../store/active-room-id-store";
+import { useDeleteNewHouseFloor, useDeleteNewHouseRoom, useNewHouse, useSaveNewHouse } from '../../store/new-house-store';
 
 
-function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
+function FloorStep() {
     const nextActiveStep = useNextActiveStep();
     const prevActiveStep = usePrevActiveStep();
+
+    const newHouse = useNewHouse();
+    const deleteNewHouseFloor = useDeleteNewHouseFloor();
+    const deleteNewHouseRoom = useDeleteNewHouseRoom();
 
     const setActiveFloorId = useSetActiveFloorId();
 
@@ -26,8 +29,8 @@ function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
     const activeFloorNdx = useActiveFloorNdx();
     const setActiveFloorNdx = useSetActiveFloorNdx();
     
-    const activeRoomId = useActiveRoomId();
     const setActiveRoomId = useSetActiveRoomId();
+
     
     const handleFloorShow = (floorId?: string) => {
         if(floorId){
@@ -54,42 +57,12 @@ function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
     };
     
     const deleteFloor = (floorId: string) => {
-        setNewHouse(
-            prev => {
-                if(!prev){
-                    return prev;
-                }
-                return {
-                    ...prev,
-                    floors: prev.floors.filter(
-                        floor=>floor.id !== floorId
-                    )
-                }
-            }
-        );
+        deleteNewHouseFloor(floorId);
         setActiveFloorNdx(null);
     }
     
     const deleteRoom = (floorId: string, roomId: string)=>{
-        setNewHouse(
-            prev=>{
-                if(!prev){
-                    return prev;
-                }
-                const prevFloors = prev.floors.find(
-                    floor => floor.id === floorId
-                );
-                if(prevFloors){
-                    const roomNdx = prevFloors.rooms.findIndex(
-                        room => room.id === roomId
-                    );
-                    if(roomNdx >= 0){
-                        prevFloors.rooms.splice(roomNdx, 1);
-                    }
-                }
-                return prev;
-            }
-        );
+        deleteNewHouseRoom(floorId, roomId);
     }
 
     const accordionOnSelect = (event: AccordionEventKey) => {
@@ -187,15 +160,9 @@ function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
                 </Button>
             </Stack>
 
-            <RoomModal
-                newHouse={newHouse}
-                setNewHouse={setNewHouse}
-            />
+            <RoomModal/>
 
-            <FloorModal
-                newHouse={newHouse}
-                setNewHouse={setNewHouse}
-            />
+            <FloorModal/>
         </>
     )
 }

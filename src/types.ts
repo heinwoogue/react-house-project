@@ -32,21 +32,6 @@ export type House = {
     floors: Floor[];
 }
 
-export type HouseFormStepProps = {
-    newHouse: House | null;
-    setNewHouse: Updater<House | null>;
-}
-
-export type FloorModalProps = {
-    newHouse: House | null;
-    setNewHouse: Updater<House | null>;
-}
-
-export type RoomModalProps = {
-    newHouse: House | null;
-    setNewHouse: Updater<House | null>;
-}
-
 export type ActiveStepState = {
     activeStep: number;
     nextActiveStep: () => void;
@@ -78,4 +63,13 @@ export type ActiveFloorNdxState = {
 export type ActiveRoomIdState = {
     activeRoomId: string | null;
     setActiveRoomId: (activeRoomId: string | null) => void;
+}
+
+export type NewHouseState = {
+    newHouse: House | null;
+    saveNewHouse: (newHouse: House | null) => void;
+    deleteNewHouseFloor: (floorId: string) =>void;
+    deleteNewHouseRoom: (floorId: string, roomId: string) =>void;
+    saveNewHouseFloor: (floor: Floor, floorId: string | null) =>void;
+    saveNewHouseRoom: (room: Room, floorId: string, roomId:string | null) =>void;
 }

@@ -1,17 +1,18 @@
 import React, { FormEvent, useRef } from 'react'
 import { v4 as uuidV4 } from "uuid";
 import { Button, Form, Modal, Stack } from 'react-bootstrap'
-import { FloorModalProps } from '../../types'
 import { useFloorShow, useHideFloor } from '../../store/floor-show-store';
 import { useActiveFloorId } from '../../store/active-floor-id-store';
 import { useSetActiveFloorNdx } from '../../store/active-floor-ndx-store';
+import { useNewHouse, useSaveNewHouseFloor, useSaveNewHouse } from '../../store/new-house-store';
 
-function FloorModal(
-    {newHouse, setNewHouse}
-    : FloorModalProps
-) {
+function FloorModal() {
     const floorShow = useFloorShow();
     const hideFloor = useHideFloor();
+
+    const newHouse = useNewHouse();
+
+    const saveNewHouseFloor = useSaveNewHouseFloor();
 
     const activeFloorId = useActiveFloorId();
 
@@ -21,28 +22,16 @@ function FloorModal(
     
     const handleSaveFloor = (e: FormEvent)=>{
         e.preventDefault();
-        setNewHouse(
-            prev => {
-                if(!prev){
-                    return prev;
-                }
-                if(activeFloorId){
-                    const prevFloor = prev.floors.find(
-                        floor => floor.id === activeFloorId
-                    );
-                    if(prevFloor){
-                        prevFloor.name = floorNameRef.current!.value
-                    }
-                }else {
-                    prev.floors.push(
-                        {
-                            id: uuidV4(), 
-                            name: floorNameRef.current!.value, 
-                            rooms: []
-                        }
-                    )
-                }
-            }
+        const floor = newHouse?.floors.find(
+            floor => floor.id === activeFloorId
+        );
+        saveNewHouseFloor(
+            {
+                id: floor?.id ?? uuidV4(),
+                rooms: floor?.rooms ?? [],
+                name: floorNameRef.current!.value, 
+            },
+            activeFloorId
         );
         if(!activeFloorId){
             setActiveFloorNdx(newHouse!.floors.length);

@@ -3,12 +3,15 @@ import Select from 'react-select';
 import { useImmer } from "use-immer";
 import { FormEvent, useRef } from "react";
 import { v4 as uuidV4 } from "uuid"
-import { HouseFormStepProps } from "../../types";
 import { foundationTypeOptions, gardenOptions, roofTypeOptions } from "../../const";
 import {useNextActiveStep} from "../../store/active-step-store";
+import { useNewHouse, useSaveNewHouse } from "../../store/new-house-store";
 
-function GeneralStep({newHouse, setNewHouse}: HouseFormStepProps) {
+function GeneralStep() {
     const nextActiveStep = useNextActiveStep();
+    
+    const newHouse = useNewHouse();
+    const saveNewHouse = useSaveNewHouse();
     
     const houseNameRef = useRef<HTMLInputElement>(null);
     const houseSizeRef = useRef<HTMLInputElement>(null);
@@ -18,20 +21,16 @@ function GeneralStep({newHouse, setNewHouse}: HouseFormStepProps) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        setNewHouse(
-            prev => {
-                return {
-                    ...prev ?? {},
-                    id: prev?.id ?? uuidV4(),
-                    name: houseNameRef.current!.value,
-                    sizeInSquareMeters: Number(houseSizeRef.current!.value),
-                    foundationType: selectedFoundationType!,
-                    roofType: selectedRoofType!,
-                    gardens: selectedGardens || [],
-                    floors: prev?.floors || []
-                }
-            }
-        );
+        saveNewHouse({
+            ...newHouse ?? {},
+            id: newHouse?.id ?? uuidV4(),
+            name: houseNameRef.current!.value,
+            sizeInSquareMeters: Number(houseSizeRef.current!.value),
+            foundationType: selectedFoundationType!,
+            roofType: selectedRoofType!,
+            gardens: selectedGardens || [],
+            floors: newHouse?.floors || []
+        });
         
         nextActiveStep();
     }

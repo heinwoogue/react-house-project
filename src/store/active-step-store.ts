@@ -1,8 +1,9 @@
 import { create } from 'zustand'
 import {persist, createJSONStorage} from 'zustand/middleware'
-import { ACTIVE_STEP } from '../hooks/useLocalStorage';
 import { ActiveStepState } from '../types';
 import { immer } from 'zustand/middleware/immer'
+
+export const ACTIVE_STEP = 'activeStep'
 
 const activeStepStore = create<ActiveStepState>()(
     immer(

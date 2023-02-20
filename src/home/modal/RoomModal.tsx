@@ -1,7 +1,6 @@
 import { FormEvent, useEffect, useRef } from 'react'
 import { useImmer } from "use-immer";
 import { Button, Form, InputGroup, Modal, Stack } from 'react-bootstrap';
-import { RoomModalProps } from '../../types';
 import { v4 as uuidV4 } from "uuid";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
@@ -9,14 +8,15 @@ import { floorTypeOptions, glassTypeOptions, roomTypeOptions, roomTypeProperties
 import { useHideRoom, useRoomShow } from '../../store/room-show-store';
 import { useActiveFloorId } from '../../store/active-floor-id-store';
 import { useActiveRoomId } from '../../store/active-room-id-store';
+import { useNewHouse, useSaveNewHouseRoom, useSaveNewHouse } from '../../store/new-house-store';
+import { Room } from '../../types';
 
-function RoomModal(
-    {
-        newHouse, setNewHouse
-    }: RoomModalProps
-) {
+function RoomModal() {
     const roomShow = useRoomShow();
     const hideRoom = useHideRoom();
+
+    const newHouse = useNewHouse();
+    const saveNewHouseRoom = useSaveNewHouseRoom();
 
     const activeFloorId = useActiveFloorId();
     const activeRoomId = useActiveRoomId();
@@ -55,53 +55,25 @@ function RoomModal(
     
     const handleSaveRoom = (e: FormEvent)=>{
         e.preventDefault();
-        setNewHouse(
-            prev => {
-                if(!prev){
-                    return prev;
-                }
-                const prevFloor = prev.floors.find(
-                    floor => floor.id === activeFloorId
-                );
-                if(!prevFloor){
-                    return prev;
-                }
-                const roomProps = {
-                    name: roomNameRef.current!.value,
-                    sizeInSquareMeters: Number(roomSizeRef.current!.value),
-                    type: selectedRoomType!,
-                    specialProps: selectedSpecialProps ?? [],
-                    floorType: selectedFloorType!,
-                    windows: inputWindows.map(
-                        inputWindow => (
-                            {
-                                id: uuidV4(),
-                                windowStyle: inputWindow!.selectedWindowStyle!,
-                                glassType: inputWindow!.selectedGlassType!
-                            }
-                        )
-                    )
-                };
-                if(activeRoomId){
-                    let prevRoomNdx = prevFloor.rooms.findIndex(
-                        room => room.id === activeRoomId
-                    );
-                    if(prevRoomNdx >= 0) {
-                        prevFloor.rooms[prevRoomNdx] = {
-                            ...prevFloor.rooms[prevRoomNdx],
-                            ...roomProps
-                        }
-                    }
-                }else{
-                    prevFloor.rooms.push(
+        saveNewHouseRoom(
+            {
+                name: roomNameRef.current!.value,
+                sizeInSquareMeters: Number(roomSizeRef.current!.value),
+                type: selectedRoomType!,
+                specialProps: selectedSpecialProps ?? [],
+                floorType: selectedFloorType!,
+                windows: inputWindows.map(
+                    inputWindow => (
                         {
-                            ...roomProps,
-                            id: uuidV4()
+                            id: uuidV4(),
+                            windowStyle: inputWindow!.selectedWindowStyle!,
+                            glassType: inputWindow!.selectedGlassType!
                         }
-                    );
-                }
-                return prev;
-            }
+                    )
+                )
+            } as Room,
+            activeFloorId!,
+            activeRoomId
         );
         hideRoom();
     }
