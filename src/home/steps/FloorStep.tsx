@@ -8,19 +8,20 @@ import FloorModal from '../modal/FloorModal';
 import {useNextActiveStep, usePrevActiveStep} from "../../store/active-step-store";
 import { useShowFloor } from "../../store/floor-show-store";
 import { useShowRoom } from "../../store/room-show-store";
+import { useActiveFloorId, useSetActiveFloorId } from "../../store/active-floor-id-store";
 
 
 function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
     const nextActiveStep = useNextActiveStep();
     const prevActiveStep = usePrevActiveStep();
 
+    const setActiveFloorId = useSetActiveFloorId();
+
     const showRoom = useShowRoom();
 
     const showFloor = useShowFloor();
     const [activeFloorNdx, setActiveFloorNdx] = useImmer<number | null>(null);
     
-    const [activeFloorId, setActiveFloorId] = useImmer<string | null>(null);
-
     const [activeRoomId, setActiveRoomId] = useImmer<string | null>(null);
     
     const handleFloorShow = (floorId?: string) => {
@@ -182,8 +183,6 @@ function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
             </Stack>
 
             <RoomModal
-                activeFloorId={activeFloorId}
-                setActiveFloorId={setActiveFloorId}
                 activeRoomId={activeRoomId}
                 setActiveRoomId={setActiveRoomId}
                 newHouse={newHouse}
@@ -191,8 +190,6 @@ function FloorStep({newHouse, setNewHouse}: HouseFormStepProps) {
             />
 
             <FloorModal
-                activeFloorId={activeFloorId}
-                setActiveFloorId={setActiveFloorId}
                 activeFloorNdx={activeFloorNdx}
                 setActiveFloorNdx={setActiveFloorNdx}
                 newHouse={newHouse}

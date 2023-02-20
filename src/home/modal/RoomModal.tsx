@@ -7,14 +7,17 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { floorTypeOptions, glassTypeOptions, roomTypeOptions, roomTypePropertiesOptions, windowStyleOptions } from '../../const';
 import { useHideRoom, useRoomShow } from '../../store/room-show-store';
+import { useActiveFloorId } from '../../store/active-floor-id-store';
 
 function RoomModal(
     {
-        activeFloorId, activeRoomId, newHouse, setNewHouse
+        activeRoomId, newHouse, setNewHouse
     }: RoomModalProps
 ) {
     const roomShow = useRoomShow();
     const hideRoom = useHideRoom();
+
+    const activeFloorId = useActiveFloorId();
     
     const roomNameRef = useRef<HTMLInputElement>(null);
     const roomSizeRef = useRef<HTMLInputElement>(null);

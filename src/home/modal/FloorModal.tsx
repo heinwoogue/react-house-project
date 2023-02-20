@@ -3,13 +3,16 @@ import { v4 as uuidV4 } from "uuid";
 import { Button, Form, Modal, Stack } from 'react-bootstrap'
 import { FloorModalProps } from '../../types'
 import { useFloorShow, useHideFloor } from '../../store/floor-show-store';
+import { useActiveFloorId } from '../../store/active-floor-id-store';
 
 function FloorModal(
-    {activeFloorId, setActiveFloorNdx, newHouse, setNewHouse}
+    {setActiveFloorNdx, newHouse, setNewHouse}
     : FloorModalProps
 ) {
     const floorShow = useFloorShow();
     const hideFloor = useHideFloor();
+
+    const activeFloorId = useActiveFloorId();
 
     const floorNameRef = useRef<HTMLInputElement>(null);
     

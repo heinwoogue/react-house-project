@@ -38,8 +38,6 @@ export type HouseFormStepProps = {
 }
 
 export type FloorModalProps = {
-    activeFloorId: string | null;
-    setActiveFloorId: Updater<string | null>;
     activeFloorNdx: number | null;
     setActiveFloorNdx: Updater<number | null>;
     newHouse: House | null;
@@ -47,8 +45,6 @@ export type FloorModalProps = {
 }
 
 export type RoomModalProps = {
-    activeFloorId: string | null;
-    setActiveFloorId: Updater<string | null>;
     activeRoomId: string | null;
     setActiveRoomId: Updater<string | null>;
     newHouse: House | null;
@@ -71,4 +67,9 @@ export type RoomShowState = {
     roomShow: boolean;
     hideRoom: () => void;
     showRoom: () => void;
+}
+
+export type ActiveFloorIdState = {
+    activeFloorId: string | null;
+    setActiveFloorId: (activeFloorId: string | null) => void;
 }
