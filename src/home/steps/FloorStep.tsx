@@ -12,7 +12,7 @@ import { useActiveRoomId, useSetActiveRoomId } from "../../store/active-room-id-
 import { useDeleteNewHouseFloor, useDeleteNewHouseRoom, useNewHouse, useSaveNewHouse } from '../../store/new-house-store';
 
 
-function FloorStep() {
+function FloorStep(): JSX.Element {
     const nextActiveStep = useNextActiveStep();
     const prevActiveStep = usePrevActiveStep();
 

@@ -6,7 +6,7 @@ import { useActiveFloorId } from '../../store/active-floor-id-store';
 import { useSetActiveFloorNdx } from '../../store/active-floor-ndx-store';
 import { useNewHouse, useSaveNewHouseFloor, useSaveNewHouse } from '../../store/new-house-store';
 
-function FloorModal() {
+function FloorModal(): JSX.Element {
     const floorShow = useFloorShow();
     const hideFloor = useHideFloor();
 

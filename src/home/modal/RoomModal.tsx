@@ -11,7 +11,7 @@ import { useActiveRoomId } from '../../store/active-room-id-store';
 import { useNewHouse, useSaveNewHouseRoom, useSaveNewHouse } from '../../store/new-house-store';
 import { Room } from '../../types';
 
-function RoomModal() {
+function RoomModal(): JSX.Element {
     const roomShow = useRoomShow();
     const hideRoom = useHideRoom();
 
@@ -28,30 +28,29 @@ function RoomModal() {
     const [selectedFloorType, setSelectedFloorType] = useImmer<string | null>(null);
     const [inputWindows, setInputWindows] = useImmer<{selectedWindowStyle: string, selectedGlassType: string}[]>([]);
 
-    useEffect(
-        ()=>{
-            const room = newHouse?.floors.find(floor => floor.id === activeFloorId)
+    const resetFields = ()=>{
+        const room = newHouse?.floors.find(floor => floor.id === activeFloorId)
                 ?.rooms.find(room => room.id === activeRoomId);
             
-            if(room){
-                setSelectedRoomType(room.type);
-                setSelectedSpecialProps(room.specialProps ?? []);
-                setSelectedFloorType(room.floorType);
-                setInputWindows(room.windows.map(
-                    window => ({
-                        selectedWindowStyle: window.windowStyle,
-                        selectedGlassType: window.glassType
-                    })
-                ));
-            }else{
-                setSelectedRoomType(null);
-                setSelectedSpecialProps([]);
-                setSelectedFloorType(null);
-                setInputWindows([]);
-            }
+        if(room){
+            setSelectedRoomType(room.type);
+            setSelectedSpecialProps(room.specialProps ?? []);
+            setSelectedFloorType(room.floorType);
+            setInputWindows(room.windows.map(
+                window => ({
+                    selectedWindowStyle: window.windowStyle,
+                    selectedGlassType: window.glassType
+                })
+            ));
+        }else{
+            setSelectedRoomType(null);
+            setSelectedSpecialProps([]);
+            setSelectedFloorType(null);
+            setInputWindows([]);
         }
-        ,[activeRoomId]
-    );
+    }
+
+    useEffect(resetFields,[activeRoomId]);
     
     const handleSaveRoom = (e: FormEvent)=>{
         e.preventDefault();
@@ -76,6 +75,7 @@ function RoomModal() {
             activeRoomId
         );
         hideRoom();
+        resetFields();
     }
     const handleAddWindow = ()=>{
         setInputWindows(

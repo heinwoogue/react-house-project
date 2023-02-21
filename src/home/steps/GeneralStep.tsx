@@ -7,7 +7,7 @@ import { foundationTypeOptions, gardenOptions, roofTypeOptions } from "../../con
 import {useNextActiveStep} from "../../store/active-step-store";
 import { useNewHouse, useSaveNewHouse } from "../../store/new-house-store";
 
-function GeneralStep() {
+function GeneralStep(): JSX.Element {
     const nextActiveStep = useNextActiveStep();
     
     const newHouse = useNewHouse();

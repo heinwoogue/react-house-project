@@ -1,7 +1,7 @@
 import { Button, Card, Stack } from 'react-bootstrap'
 import {usePrevActiveStep} from '../../store/active-step-store';
 
-function CompleteStep() {
+function CompleteStep(): JSX.Element {
     const prevActiveStep = usePrevActiveStep();
 
     return (

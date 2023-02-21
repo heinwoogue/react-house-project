@@ -7,14 +7,14 @@ import FloorStep from './steps/FloorStep';
 import {useActiveStep} from '../store/active-step-store';
 
 
-function NewHomeForm() {
+function NewHomeForm(): JSX.Element {
     const activeStep = useActiveStep();
     
     return (
         <>
             <h1>New House</h1>
             <Stepper
-                steps={[{ label: 'Genreal' }, { label: 'Floors' }, {label: 'Complete'}]}
+                steps={[{ label: 'General' }, { label: 'Floors' }, {label: 'Complete'}]}
                 activeStep={activeStep}
                 styleConfig={stepStyleDTOCustom}
             />
